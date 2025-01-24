@@ -11,15 +11,31 @@ public static class Bus
     public static readonly BusEvent Sync = new BusEvent();
 }
 
-public class OnEnemyDeathEvent : EventArgs
+public class EnemyDeathEvent : EventArgs
 { 
-    
+    public GameObject target { get; }
+
+    public EnemyDeathEvent(GameObject _target)
+    {
+        target = _target;
+    }
 }
 
 public class OnEnemyReachedBase : EventArgs
 {
 }
 
+public class EnemyTakesDamageEvent : EventArgs
+{
+    public int damageAmount { get; }
+    public GameObject target { get; }
+    
+    public EnemyTakesDamageEvent(GameObject _target, int _damage)
+    {
+        target = _target;
+        damageAmount = _damage;
+    }
+}
 public class EndOfGame : EventArgs
 { }
 

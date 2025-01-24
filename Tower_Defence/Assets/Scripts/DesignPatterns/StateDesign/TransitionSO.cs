@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "NewTransition", menuName = "StateMachine/Transition")]
+[CreateAssetMenu(fileName = "NewTransition", menuName = "ScriptableObjects/StateMachine/Transition")]
 public class TransitionSO : ScriptableObject
 {
     public List<StateSO> FromStates; // Multiple states can transition to the same target state

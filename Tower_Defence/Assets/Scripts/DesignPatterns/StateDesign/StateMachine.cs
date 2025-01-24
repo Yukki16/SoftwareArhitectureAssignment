@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
-
+[DisallowMultipleComponent]
 public class StateMachine : MonoBehaviour
 {
     private StateSO currentState;
@@ -30,9 +31,21 @@ public class StateMachine : MonoBehaviour
         }
     }
 
+    public void AddTransitions(IEnumerable<TransitionSO> transitions)
+    {
+        foreach (var transition in transitions)
+        {
+            AddTransition(transition);
+        }
+    }
     public void AddGlobalTransition(TransitionSO transition)
     {
         globalTransitions.Add(transition);
+    }
+
+    public void AddGlobalTransitons(IEnumerable<TransitionSO> transitions)
+    {
+        globalTransitions.AddRange(transitions);
     }
 
     public void UpdateState(string condition)

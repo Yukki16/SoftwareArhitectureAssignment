@@ -10,39 +10,44 @@ using UnityEngine.Events;
 /// </summary>
 public class BusEvent
 {
-    private Dictionary<Type, List<EventHandler>> _subscriberByType;
+    private Dictionary<Type, List<Delegate>> _subscriberByType;
 
     public BusEvent()
     {
-        _subscriberByType = new Dictionary<Type, List<EventHandler>>();
+        _subscriberByType = new Dictionary<Type, List<Delegate>>();
     }
-    public void Subscribe<T>(EventHandler eventHandler) where T : EventArgs
+
+    // Subscribe to an event
+    public void Subscribe<T>(Action<T> eventHandler) where T : EventArgs
     {
         var type = typeof(T);
-        if(!_subscriberByType.TryGetValue(type, out var subscribers))
+        if (!_subscriberByType.TryGetValue(type, out var subscribers))
         {
-            _subscriberByType.Add(type, new List<EventHandler>());
+            _subscriberByType[type] = new List<Delegate>();
         }
 
         _subscriberByType[type].Add(eventHandler);
     }
 
-    public void Unsubscribe<T>(EventHandler eventHandler) where T : EventArgs
+    // Unsubscribe from an event
+    public void Unsubscribe<T>(Action<T> eventHandler) where T : EventArgs
     {
         var type = typeof(T);
         if (_subscriberByType.TryGetValue(type, out var subscribers))
         {
-            _subscriberByType[type].Remove(eventHandler);
+            subscribers.Remove(eventHandler);
         }
     }
 
-    public void Publish(object sender, EventArgs e)
+    // Publish an event
+    public void Publish<T>(object sender, T e) where T : EventArgs
     {
-        if(_subscriberByType.TryGetValue(e.GetType(), out var subscribers))
+        var type = typeof(T);
+        if (_subscriberByType.TryGetValue(type, out var subscribers))
         {
             foreach (var subscriber in subscribers)
             {
-                subscriber(sender, e);
+                (subscriber as Action<T>)?.Invoke(e);
             }
         }
     }

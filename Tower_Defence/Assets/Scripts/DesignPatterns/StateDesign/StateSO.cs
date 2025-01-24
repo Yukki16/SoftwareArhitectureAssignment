@@ -2,8 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
-[CreateAssetMenu(fileName = "NewState", menuName = "StateMachine/State")]
 public class StateSO : ScriptableObject
 {
     public string StateName;  // Name for debugging or UI purposes

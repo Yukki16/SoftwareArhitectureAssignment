@@ -17,11 +17,26 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
-    [Header("General Properties")]
+    static StateMachine _stateMachine = new StateMachine();
+    #region States
+    [Header("GameStates")]
+    [SerializeField] StateSO none;
+    [SerializeField] PauseSO pause;
+    [SerializeField] PlayingSO playing;
+    [SerializeField] BuildingSO building;
 
+    [Header("Transitions")]
+    [SerializeField] TransitionSO[] stateTransitions;
+    [SerializeField] TransitionSO[] globalStateTransitions;
+    #endregion
+
+    #region GeneralProperties
+    [Header("General Properties")]
     public int lifes = 5;
     public int coins = 300;
+    #endregion
 
+    #region WaveProperties
     [Header("Wave Properties")]
 
     [HideInInspector]
@@ -37,10 +52,9 @@ public class GameManager : MonoBehaviour
 
     [Min(0.1f)]
     public float spawnDelay;
+    #endregion
 
-    [Range(0, 60)]
-    public int buildingTime = 30;
-
+    #region Enemies
     [Header("Enemies")]
 
     public int initialNumberOfEnemiesToSpawn = 10;
@@ -54,7 +68,6 @@ public class GameManager : MonoBehaviour
     //[HideInInspector]
     public Transform enemyPOI;
 
-
     [Serializable]
     public struct enemyTypePercentage
     {
@@ -63,12 +76,19 @@ public class GameManager : MonoBehaviour
 
         [Range(0, 100)] public float percentageToSpawn;
     }
+    #endregion
+    
+    [Range(0, 60)]
+    public int buildingTime = 30;
 
+
+    #region DebugValues
     [Header("Debug values")]
     [Tooltip("The amount of money to add by pressing < L > to the total of the coins")]
     [SerializeField] int money = 10000;
     [SerializeField] int lifesToAdd = 100;
     [SerializeField] bool invincibleBase = false;
+    #endregion
     public enum stateOfGame
     {
         None,
@@ -205,9 +225,20 @@ public class GameManager : MonoBehaviour
         remainingNumberOfEnemiesToSpawn = initialNumberOfEnemiesToSpawn;
         lastCalculatedNumberOfEnemiesToSpawn = initialNumberOfEnemiesToSpawn;
 
-        Bus.Sync.Subscribe<OnEnemyReachedBase>(EnemyReachedBase);
+        //Bus.Sync.Subscribe<OnEnemyReachedBase>(EnemyReachedBase);
     }
 
+    void SetUpStates()
+    {
+        if(_stateMachine == null)
+        {
+            _stateMachine = new StateMachine();
+        }
+
+        _stateMachine.SetState(building);
+        _stateMachine.AddTransitions(stateTransitions);
+        _stateMachine.AddGlobalTransitons(globalStateTransitions);
+    }
     void EnemyReachedBase(object sender, EventArgs args)
     {
         if (!invincibleBase)

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
@@ -11,13 +12,17 @@ using UnityEngine.UI;
 /// </summary>
 public class Enemy : MonoBehaviour
 {
-    public EnemySO properties;
 
-    public float health;
+    [SerializeField] EnemySO properties;
 
-    [SerializeField] GameObject objectThatContainsTheVisual;
+    string enemyName;
+    float health;
+    float speed;
+    float goldValue;
 
-    public NavMeshAgent agent;
+    [SerializeField] NavMeshAgent agent;
+
+    [SerializeField] List<Transform> pathTargets = new List<Transform>();
 
     [Header("Debuffs")]
     public bool isSlowed;
@@ -29,30 +34,59 @@ public class Enemy : MonoBehaviour
 
     private void OnEnable()
     {
+        //////////////////////////////////////////////////////// Subscribers
+        Bus.Sync.Subscribe<EnemyTakesDamageEvent>(OnTakeDamage);
+        Bus.Sync.Subscribe<EnemyDeathEvent>(OnDeath);
+
+        ////////////////////////////////////////////////////////
         if (agent == null)
             agent = GetComponent<NavMeshAgent>();
 
-        agent.speed = properties.speed;
-        health = properties.health;
+        enemyName = properties.name;
+        health = properties.health; 
+        speed = properties.speed;
+        goldValue = properties.killingValue;
 
-        //Bus.Sync.Subscribe<EndOfGame>(OnGameEnd);
+        agent.name = enemyName;
+        agent.speed = speed;
 
-        if (properties.visuals != null)
+        agent.stoppingDistance = 0.1f;
+
+        StartCoroutine(Move());
+    }
+
+    //Subscribes to it's own death so the bus has time to update before destroying itself.
+    private void OnDeath(EnemyDeathEvent @event)
+    {
+        if(@event.target.Equals(gameObject)) 
         {
-            objectThatContainsTheVisual.GetComponent<MeshRenderer>().material = properties.visuals;
+            GameManager.Instance.AddMoney(properties.killingValue);
+
+            Destroy(gameObject);
         }
     }
 
     private void OnDisable()
     {
-        //Bus.Sync.Unsubscribe<EndOfGame>(OnGameEnd);
+        Bus.Sync.Unsubscribe<EnemyTakesDamageEvent>(OnTakeDamage);
+        Bus.Sync.Unsubscribe<EnemyDeathEvent>(OnDeath);
     }
 
-    /*void OnGameEnd(object sender, EventArgs args)
+    private void OnTakeDamage(EnemyTakesDamageEvent @event)
     {
-        StartCoroutine(WaitForBusAndSelfDestroy());
-    }*/
-    public void Damage(float damage)
+        if(@event.target.Equals(gameObject))
+        {
+            health -= @event.damageAmount;
+
+            if(health <= 0f)
+            {
+                Bus.Sync.Publish(this, new EnemyDeathEvent(gameObject));
+            }
+        }
+    }
+
+
+    /*public void Damage(float damage)
     {
         health -= damage;
 
@@ -60,13 +94,13 @@ public class Enemy : MonoBehaviour
         //Debug.Log("Got shot for" + damage);
         if (health <= 0)
         {
-            Bus.Sync.Publish(this.gameObject, new OnEnemyDeathEvent());
+            Bus.Sync.Publish(this.gameObject, new EnemyDeathEvent());
             GameManager.Instance.AddMoney(properties.killingValue);
             Instantiate(moneyAfterDeathDisplayCanvasPrefab, this.transform.position, Quaternion.Euler(90, 0, 0)).GetComponentInChildren<TMP_Text>().text = "+" + properties.killingValue.ToString();
             //Debug.Log("About to destroy myself");
             Destroy(this.gameObject);
         }
-    }
+    }*/
 
     public void SetDestination(Vector3 destinationOfTheEnemy)
     {
@@ -89,4 +123,15 @@ public class Enemy : MonoBehaviour
         yield return new WaitForSeconds(1f);
         Destroy(this.gameObject);
     }*/
+
+    IEnumerator Move()
+    {
+        for (int i = 0; i < pathTargets.Count; i++)
+        {
+            agent.SetDestination(pathTargets[i].position);
+            //Debug.Log(agent.remainingDistance);
+            yield return new WaitUntil(() => !agent.pathPending &&
+            agent.remainingDistance <= agent.stoppingDistance);
+        }
+    }
 }
