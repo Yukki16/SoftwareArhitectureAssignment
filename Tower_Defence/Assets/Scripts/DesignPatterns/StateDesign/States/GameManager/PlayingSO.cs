@@ -5,11 +5,12 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "NewPauseState", menuName = "ScriptableObjects/StateMachine/PlayingState")]
 public class PlayingSO : StateSO
 {
-    Coroutine spawnEnemiesCoroutine;
+    Coroutine spawnEnemiesCoroutine = null;
     public override void OnEnter(GameObject owner)
     {
         if(spawnEnemiesCoroutine == null)
         {
+            Debug.Log("Started spawning enemies");
             spawnEnemiesCoroutine = GameManager.Instance.StartCoroutine(GameManager.Instance.SpawnEnemies());
         }
         else

@@ -11,12 +11,20 @@ public class StateMachine : MonoBehaviour
     private Dictionary<StateSO, List<TransitionSO>> stateTransitions = new Dictionary<StateSO, List<TransitionSO>>();
     private List<TransitionSO> globalTransitions = new List<TransitionSO>(); // For transitions with multiple sources
 
+    private void Update()
+    {
+        currentState?.OnUpdate(gameObject);
+    }
     public void SetState(StateSO newState)
     {
         if (currentState != newState)
         {
+            currentState?.OnExit(gameObject);
+
             previousState = currentState; // Remember the previous state
             currentState = newState;
+
+            currentState?.OnEnter(gameObject);
             Debug.Log($"State changed to: {currentState.name}");
         }
     }

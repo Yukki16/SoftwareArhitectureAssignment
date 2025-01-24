@@ -77,6 +77,9 @@ public class GameManager : MonoBehaviour
 
         [Range(0, 100)] public float percentageToSpawn;
     }
+
+
+    List<GameObject> enemyList = new List<GameObject>();
     #endregion
     
     [Range(0, 60)]
@@ -125,8 +128,11 @@ public class GameManager : MonoBehaviour
     {
         _stateMachine.UpdateState(TransitionConditions.Con_Play);
     }
+
+    
     public IEnumerator SpawnEnemies()
     {
+        Debug.Log("Started coroutine");
         float randomNumber;
         float totalValueOfPersantages = 0;
 
@@ -134,15 +140,6 @@ public class GameManager : MonoBehaviour
         {
             totalValueOfPersantages += enemyTypePercentages[i].percentageToSpawn;
         }
-
-        /*//Add a timer on GUI
-        Debug.Log("Building time started");
-        //state = stateOfGame.BuildingTime;
-        Bus.Sync.Publish(this.gameObject, new UpdateUI());
-        yield return new WaitForSeconds(buildingTime);
-        //state = stateOfGame.Wave;
-        Bus.Sync.Publish(this.gameObject, new UpdateUI());
-        Debug.Log("Building time ended");*/
 
         while (remainingNumberOfEnemiesToSpawn > 0)
         {
@@ -155,9 +152,14 @@ public class GameManager : MonoBehaviour
             {
                 if (enemyTypePercentages[i].percentageToSpawn / totalValueOfPersantages + persantageCounter >= randomNumber)
                 {
+
+                    yield return new WaitUntil(() => _stateMachine.currentState == playing); //Waits until the game is unpaused if needed
+                                                                                            //Still allows all the way to here for the game
+                                                                                            //to decide on an enemy
+
                     //Spawns enemy
                     var enemy = Instantiate(enemyTypePercentages[i].enemyPrefab, enemySpawnpoint.transform.position, Quaternion.identity);
-                    //enemy.GetComponent<Enemy>().SetDestination(enemyPOI.position);
+                    enemyList.Add(enemy);
                     break;
                 }
                 else
@@ -167,19 +169,24 @@ public class GameManager : MonoBehaviour
             }
 
 
-            yield return new WaitForSeconds(spawnDelay);
+            yield return new WaitForSeconds(spawnDelay); //Uses scaled time so the coroutine will pause if the pause state enters
         }
+
         waveNumber++;
         if (waveNumber >= maxWaveNumber)
         {
             Bus.Sync.Publish(this.gameObject, new EndOfGame());
+
+            _stateMachine.UpdateState(TransitionConditions.Con_Empty); //Sets the game manager back to an idle state
             yield break;
         }
 
         //Increase difficulty of the wave
         IncreaseDifficultyOfTheWave();
 
-        StartCoroutine(SpawnEnemies());
+        yield return new WaitUntil(() => enemyList.Count == 0); //Waits until all enemies are killed to enter building mode.
+        _stateMachine.UpdateState(TransitionConditions.Con_Build);
+
 
         /*        //Add a timer on GUI
                 Debug.Log("Building time started");
@@ -203,6 +210,7 @@ public class GameManager : MonoBehaviour
         {
             Instance = this;
             SetUpStates();
+            Bus.Sync.Subscribe<EnemyDeathEvent>(RemoveEnemyFromList);
         }
         else
         {
@@ -215,11 +223,19 @@ public class GameManager : MonoBehaviour
         //Bus.Sync.Subscribe<OnEnemyReachedBase>(EnemyReachedBase);
     }
 
+    private void RemoveEnemyFromList(EnemyDeathEvent @event)
+    {
+        if(enemyList.Contains(@event.target))
+        {
+            enemyList.Remove(@event.target);
+        }
+    }
+
     void SetUpStates()
     {
         if(_stateMachine == null)
         {
-            _stateMachine = new StateMachine();
+            _stateMachine = this.AddComponent<StateMachine>();
         }
 
         _stateMachine.SetState(none);
