@@ -84,16 +84,28 @@ public class ConditionEnumerator
         }
     }
 
-    static string GetEnumMembersString()
+    /*static string GetEnumMembersString()
     {
         string members = "    public enum Condition\n    {\n";
 
         for (int i = 0; i < conditions.Length; i++)
         {
-            members += "        " + ClearSpecialCharacters(conditions[i]) + ",\n";
+            members += "public const string Con_" + ClearSpecialCharacters(conditions[i]) + ",\n";
         }
 
         members += "    }\n";
+        return members;
+    }*/
+
+    static string GetEnumMembersString()
+    {
+        string members = string.Empty;
+
+        for (int i = 0; i < conditions.Length; i++)
+        {
+            members = members + "public const string Con_" + ClearSpecialCharacters(conditions[i]) + " = @\"" + conditions[i] + "\";\n";
+        }
+
         return members;
     }
 

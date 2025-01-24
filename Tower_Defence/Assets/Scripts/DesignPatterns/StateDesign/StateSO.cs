@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+[CreateAssetMenu(fileName = "EmptyState", menuName = "ScriptableObjects/StateMachine/Empty State")]
 public class StateSO : ScriptableObject
 {
     public string StateName;  // Name for debugging or UI purposes

@@ -6,7 +6,7 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public class StateMachine : MonoBehaviour
 {
-    private StateSO currentState;
+    public StateSO currentState;
     private StateSO previousState; // Tracks the previous state
     private Dictionary<StateSO, List<TransitionSO>> stateTransitions = new Dictionary<StateSO, List<TransitionSO>>();
     private List<TransitionSO> globalTransitions = new List<TransitionSO>(); // For transitions with multiple sources

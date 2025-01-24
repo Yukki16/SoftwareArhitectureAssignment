@@ -10,10 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 67babf0df0db28a4fa97f94b96a69247, type: 3}
-  m_Name: PauseTransition
+  m_Name: BuildingTransition
   m_EditorClassIdentifier: 
   FromStates:
+  - {fileID: 11400000, guid: 5979a5e61ac2e4444a901a7c81ca618f, type: 2}
   - {fileID: 11400000, guid: bcc5cfa9d2500a544ba13c9f7702daeb, type: 2}
-  - {fileID: 11400000, guid: fbf2dcbe87bdc9d499b50c4513adba2d, type: 2}
-  toState: {fileID: 11400000, guid: 332586c2c069d334f8caca6ef1912afc, type: 2}
-  condition: Pause
+  - {fileID: 11400000, guid: 332586c2c069d334f8caca6ef1912afc, type: 2}
+  toState: {fileID: 11400000, guid: fbf2dcbe87bdc9d499b50c4513adba2d, type: 2}
+  condition: Build

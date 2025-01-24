@@ -17,7 +17,8 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
-    static StateMachine _stateMachine = new StateMachine();
+    static StateMachine _stateMachine;
+
     #region States
     [Header("GameStates")]
     [SerializeField] StateSO none;
@@ -89,36 +90,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] int lifesToAdd = 100;
     [SerializeField] bool invincibleBase = false;
     #endregion
-    public enum stateOfGame
-    {
-        None,
-        BuildingTime,
-        Wave,
-        Paused,
-        EndOfGame
-    }
-
-    public stateOfGame state = stateOfGame.None;
-    public void GetEnemySpawnLocation(Transform spawnPoint)
-    {
-        enemySpawnpoint = spawnPoint;
-    }
-
-    public void GetEnemyPOI(Transform enemyPOI)
-    {
-        this.enemyPOI = enemyPOI;
-    }
-
+    
     public void AddMoney(int moneyToAdd)
     {
         coins += moneyToAdd;
     }
-    /**
-    private void Start()
-    {
-        StartCoroutine(SpawnEnemies());
-    }
-    //**/
 
     private void Update()
     {
@@ -138,6 +114,16 @@ public class GameManager : MonoBehaviour
         {
             invincibleBase = true;
         }
+
+        if(Input.GetKeyDown(KeyCode.L))
+        {
+            StartGame();
+        }
+    }
+
+    private void StartGame()
+    {
+        _stateMachine.UpdateState(TransitionConditions.Con_Play);
     }
     public IEnumerator SpawnEnemies()
     {
@@ -149,14 +135,14 @@ public class GameManager : MonoBehaviour
             totalValueOfPersantages += enemyTypePercentages[i].percentageToSpawn;
         }
 
-        //Add a timer on GUI
+        /*//Add a timer on GUI
         Debug.Log("Building time started");
-        state = stateOfGame.BuildingTime;
+        //state = stateOfGame.BuildingTime;
         Bus.Sync.Publish(this.gameObject, new UpdateUI());
         yield return new WaitForSeconds(buildingTime);
-        state = stateOfGame.Wave;
+        //state = stateOfGame.Wave;
         Bus.Sync.Publish(this.gameObject, new UpdateUI());
-        Debug.Log("Building time ended");
+        Debug.Log("Building time ended");*/
 
         while (remainingNumberOfEnemiesToSpawn > 0)
         {
@@ -171,7 +157,7 @@ public class GameManager : MonoBehaviour
                 {
                     //Spawns enemy
                     var enemy = Instantiate(enemyTypePercentages[i].enemyPrefab, enemySpawnpoint.transform.position, Quaternion.identity);
-                    enemy.GetComponent<Enemy>().SetDestination(enemyPOI.position);
+                    //enemy.GetComponent<Enemy>().SetDestination(enemyPOI.position);
                     break;
                 }
                 else
@@ -216,6 +202,7 @@ public class GameManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
+            SetUpStates();
         }
         else
         {
@@ -235,7 +222,7 @@ public class GameManager : MonoBehaviour
             _stateMachine = new StateMachine();
         }
 
-        _stateMachine.SetState(building);
+        _stateMachine.SetState(none);
         _stateMachine.AddTransitions(stateTransitions);
         _stateMachine.AddGlobalTransitons(globalStateTransitions);
     }
@@ -247,7 +234,7 @@ public class GameManager : MonoBehaviour
             if (lifes == 0)
             {
                 Bus.Sync.Publish(this.gameObject, new EndOfGame());
-                state = stateOfGame.EndOfGame;
+                //state = stateOfGame.EndOfGame;
                 StopAllCoroutines();
             }
         }
