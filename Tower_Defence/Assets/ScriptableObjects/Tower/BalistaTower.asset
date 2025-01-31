@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 970724fa28aed384ca66234a55f53449, type: 3}
+  m_Name: BalistaTower
+  m_EditorClassIdentifier: 
+  costValue: 50
+  damage: 4
+  range: 10
+  attackInterval: 2
+  projectilePrefab: {fileID: 3168916258967647786, guid: d5b5ca69629ecd44d8e523ce727f6ca2,
+    type: 3}
+  Lv2UpgradePrefab: {fileID: 4197980730263662245, guid: fdad1186a4a6cff44a1017189cfef935,
+    type: 3}
+  Lv3UpgradePrefab: {fileID: 3791790086230501449, guid: e60c70ff17571074a8257690f5cab73d,
+    type: 3}

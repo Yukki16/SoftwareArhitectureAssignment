@@ -10,7 +10,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 175192, guid: 996b1cdc214c6ad43b2b0a8dc6ab12ed, type: 3}
       propertyPath: m_Name
-      value: Character_Viking_White Variant
+      value: WhiteEnemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 175192, guid: 996b1cdc214c6ad43b2b0a8dc6ab12ed, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
       objectReference: {fileID: 0}
     - target: {fileID: 189610, guid: 996b1cdc214c6ad43b2b0a8dc6ab12ed, type: 3}
       propertyPath: m_IsActive
@@ -72,6 +76,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 4359611807424518701}
+    - targetCorrespondingSourceObject: {fileID: 175192, guid: 996b1cdc214c6ad43b2b0a8dc6ab12ed,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2358016638739839035}
   m_SourcePrefab: {fileID: 100100000, guid: 996b1cdc214c6ad43b2b0a8dc6ab12ed, type: 3}
 --- !u!1 &5998493022209304438 stripped
 GameObject:
@@ -92,7 +100,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   properties: {fileID: 11400000, guid: 86334ad4fd2175f40a2c4e0dfb052737, type: 2}
-  agent: {fileID: 5518253463966268714, guid: fc391f68721561643bf3dda9263f09d8, type: 3}
+  distanceTraveled: 0
+  agent: {fileID: 4359611807424518701}
   path: {fileID: 11400000, guid: f68ab26c02214d949bff42a85966bf1b, type: 2}
   isSlowed: 0
   slowedPower: 0
@@ -120,3 +129,24 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 1
+--- !u!65 &2358016638739839035
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5998493022209304438}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.48747253, y: 1.4162407, z: 0.45689392}
+  m_Center: {x: 0.022506714, y: 0.94138503, z: -0.04561615}

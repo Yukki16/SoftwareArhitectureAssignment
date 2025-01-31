@@ -8,4 +8,7 @@ public const string T_MainCamera = @"MainCamera";
 public const string T_Player = @"Player";
 public const string T_GameController = @"GameController";
 public const string T_Folder = @"Folder";
+public const string T_Enemy = @"Enemy";
+public const string T_ArrowSpawn = @"ArrowSpawn";
+public const string T_Bow = @"Bow";
 }

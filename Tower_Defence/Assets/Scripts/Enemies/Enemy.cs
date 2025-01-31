@@ -21,6 +21,8 @@ public class Enemy : MonoBehaviour
     float speed;
     int goldValue;
 
+    [HideInInspector] public float distanceTraveled;
+
     [SerializeField] NavMeshAgent agent;
 
     [SerializeField] PathSO path;
@@ -37,7 +39,7 @@ public class Enemy : MonoBehaviour
     /// <summary>
     /// DON'T FORGET TO SUBSCRIBE
     /// </summary>
-    
+
     private void OnEnable()
     {
         //////////////////////////////////////////////////////// Subscribers
@@ -48,7 +50,7 @@ public class Enemy : MonoBehaviour
             agent = GetComponent<NavMeshAgent>();
 
         enemyName = properties.name;
-        health = properties.health; 
+        health = properties.health;
         speed = properties.speed;
         goldValue = properties.killingValue;
 
@@ -66,17 +68,24 @@ public class Enemy : MonoBehaviour
     /// <param name="event"></param>
     private void OnDeath(EnemyDeathEvent @event)
     {
-        if(@event.target.Equals(gameObject)) 
+        if (@event.target.Equals(gameObject))
         {
             GameManager.Instance.AddMoney(goldValue);
-
-            Destroy(gameObject);
+            StopAllCoroutines();
+            StartCoroutine(DestroyNextFrame());
         }
     }
+
+    private IEnumerator DestroyNextFrame()
+    {
+        yield return new WaitForNextFrameUnit();
+        Destroy(gameObject);
+    }
+
     /// <summary>
     /// DON'T FORGET TO UNSUBSCRIBE
     /// </summary>
-    private void OnDisable() 
+    private void OnDisable()
     {
         Bus.Sync.Unsubscribe<EnemyTakesDamageEvent>(OnTakeDamage);
         Bus.Sync.Unsubscribe<EnemyDeathEvent>(OnDeath);
@@ -84,14 +93,22 @@ public class Enemy : MonoBehaviour
 
     private void OnTakeDamage(EnemyTakesDamageEvent @event)
     {
-        if(@event.target.Equals(gameObject))
+        if (@event.target.Equals(gameObject))
         {
             health -= @event.damageAmount;
 
-            if(health <= 0f)
+            if (health <= 0f)
             {
                 Bus.Sync.Publish(this, new EnemyDeathEvent(gameObject));
             }
+        }
+    }
+
+    private void Update()
+    {
+        if (!agent.isStopped)
+        {
+            distanceTraveled += agent.speed * Time.deltaTime;
         }
     }
 
@@ -101,8 +118,11 @@ public class Enemy : MonoBehaviour
         {
             agent.SetDestination(path.pathPoints[i]);
             //Debug.Log(agent.remainingDistance);
-            yield return new WaitUntil(() => !agent.pathPending &&
-            agent.remainingDistance <= agent.stoppingDistance);
+            if (agent != null)
+            {
+                yield return new WaitUntil(() => !agent.pathPending &&
+                agent.remainingDistance <= agent.stoppingDistance);
+            }
         }
     }
 }
