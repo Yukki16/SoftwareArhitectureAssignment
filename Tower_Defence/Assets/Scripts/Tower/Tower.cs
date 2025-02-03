@@ -66,13 +66,18 @@ public class Tower : MonoBehaviour
 
     void CalculateGoldPerStats()
     {
-        damageGoldValue = goldValue / (int)damage;
-        attackIntervalGoldValue = goldValue / (int)attackInterval;
-        rangeGoldValue = goldValue / (int)range;
+        float totalStatValue = damage + (1 / attackInterval) + range; // Normalized contribution
+        damageGoldValue = (int)(goldValue * (damage / totalStatValue));
+        attackIntervalGoldValue = (int)(goldValue * ((1 / attackInterval) / totalStatValue));
+        rangeGoldValue = (int)(goldValue * (range / totalStatValue));
     }
     private void CalculateUpgradeCost()
     {
-        upgradeCost = goldValue + (damageGoldValue * damageUpgradePercentage) / 100 + (attackIntervalGoldValue * attackIntervalUpgradePercentage) / 100 + (rangeGoldValue * rangeUpgradePercentage) / 100;
+        float totalStatIncreaseFactor = (damageUpgradePercentage / 100f)
+                                  + (attackIntervalUpgradePercentage / 100f)
+                                  + (rangeUpgradePercentage / 100f);
+
+        upgradeCost = (int)(goldValue * (1 + totalStatIncreaseFactor));
     }
 
     public void Upgrade()
@@ -106,7 +111,10 @@ public class Tower : MonoBehaviour
 
     private void UpdateProjectileSpawnAndLookAt()
     {
-        projectileSpawn = new List<GameObject>(GameObject.FindGameObjectsWithTag(Tags.T_ArrowSpawn)).Find(g => g.transform.IsChildOf(currentUpgradeTowerPrefab.transform)).transform;
-        objectLookingAtEnemy = new List<GameObject>(GameObject.FindGameObjectsWithTag(Tags.T_Bow)).Find(g => g.transform.IsChildOf(currentUpgradeTowerPrefab.transform));
+        if (currentUpgradeTowerPrefab != null && !(targetingState is EffectTargetingBehaviour))
+        {
+            projectileSpawn = new List<GameObject>(GameObject.FindGameObjectsWithTag(Tags.T_ArrowSpawn)).Find(g => g.transform.IsChildOf(currentUpgradeTowerPrefab.transform)).transform;
+            objectLookingAtEnemy = new List<GameObject>(GameObject.FindGameObjectsWithTag(Tags.T_Bow)).Find(g => g.transform.IsChildOf(currentUpgradeTowerPrefab.transform));
+        }
     }
 }

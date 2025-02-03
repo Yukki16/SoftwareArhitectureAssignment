@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 970724fa28aed384ca66234a55f53449, type: 3}
+  m_Name: FireTower
+  m_EditorClassIdentifier: 
+  costValue: 75
+  damage: 8
+  range: 7
+  attackInterval: 1.5
+  projectilePrefab: {fileID: 2888325514139955586, guid: a9bc72e924ce472478517a214f8a2522,
+    type: 3}
+  TowerPrefab: {fileID: 1598074345317265207, guid: d398fd9d2e2f37443800edbe77ee11b8,
+    type: 3}
+  Lv2UpgradePrefab: {fileID: 5086865467862924705, guid: fde7a6a140fb72949b9a593a7a58e76d,
+    type: 3}
+  Lv3UpgradePrefab: {fileID: 1438093624943116300, guid: cf0f278bbefe4bf42acc2c12f02a503b,
+    type: 3}

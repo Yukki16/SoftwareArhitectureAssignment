@@ -15,7 +15,8 @@ public class FirstTargetBehaviour : TargetBehaviour
         {
             var proj = Instantiate(projectile, tower.projectileSpawn.position, Quaternion.identity);
             proj.GetComponent<Projectile>().SetTarget(target, 10f, (int)tower.damage);
-            tower.objectLookingAtEnemy.GetComponent<LookAtEnemy>().target = target.gameObject;
+            if (tower.objectLookingAtEnemy != null)
+                tower.objectLookingAtEnemy.GetComponent<LookAtEnemy>().target = target.gameObject;
         }
     }
 }

@@ -12,6 +12,7 @@ public class TowerInfo : ScriptableObject
 
     public GameObject projectilePrefab;
 
+    public GameObject TowerPrefab;
     public GameObject Lv2UpgradePrefab;
     public GameObject Lv3UpgradePrefab;
 }

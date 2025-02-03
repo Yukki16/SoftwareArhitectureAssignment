@@ -30,6 +30,7 @@ public class Enemy : MonoBehaviour
     [Header("Debuffs")]
     public bool isSlowed;
     public float slowedPower = 0;
+    [HideInInspector] public Coroutine slowCoroutine;
 
     public Slider healthBar;
 
@@ -45,6 +46,7 @@ public class Enemy : MonoBehaviour
         //////////////////////////////////////////////////////// Subscribers
         Bus.Sync.Subscribe<EnemyTakesDamageEvent>(OnTakeDamage);
         Bus.Sync.Subscribe<EnemyDeathEvent>(OnDeath);
+        Bus.Sync.Subscribe<TimeChanged>(CalculateSpeed);
         ////////////////////////////////////////////////////////
         if (agent == null)
             agent = GetComponent<NavMeshAgent>();
@@ -55,11 +57,18 @@ public class Enemy : MonoBehaviour
         goldValue = properties.killingValue;
 
         agent.name = enemyName;
-        agent.speed = speed;
+        CalculateSpeed(null);
 
         agent.stoppingDistance = 0.1f;
 
         StartCoroutine(Move());
+    }
+
+    //Recalculates the speed when the time scale changes;
+    private void CalculateSpeed(TimeChanged changed)
+    {
+        speed = speed * Time.timeScale;
+        agent.speed = speed - (speed * slowedPower) / 100;
     }
 
     /// <summary>
@@ -76,6 +85,7 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    //Needed for the bus to update all the list the enemy is in.
     private IEnumerator DestroyNextFrame()
     {
         yield return new WaitForNextFrameUnit();
@@ -89,6 +99,24 @@ public class Enemy : MonoBehaviour
     {
         Bus.Sync.Unsubscribe<EnemyTakesDamageEvent>(OnTakeDamage);
         Bus.Sync.Unsubscribe<EnemyDeathEvent>(OnDeath);
+        Bus.Sync.Unsubscribe<TimeChanged>(CalculateSpeed);
+    }
+
+    public void StopSlowCoroutine()
+    {
+        agent.speed = speed;
+        if(slowCoroutine != null)
+            StopCoroutine(slowCoroutine);
+    }
+    public IEnumerator Slow()
+    {
+        agent.speed = speed - (speed * slowedPower) / 100;
+
+        yield return new WaitForSeconds(1f);
+
+        slowedPower = 0;
+        agent.speed = speed;
+        isSlowed = false;
     }
 
     private void OnTakeDamage(EnemyTakesDamageEvent @event)

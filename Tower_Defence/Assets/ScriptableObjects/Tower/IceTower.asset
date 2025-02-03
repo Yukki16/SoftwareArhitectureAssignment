@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 970724fa28aed384ca66234a55f53449, type: 3}
+  m_Name: IceTower
+  m_EditorClassIdentifier: 
+  costValue: 70
+  damage: 20
+  range: 7
+  attackInterval: 1
+  projectilePrefab: {fileID: 0}
+  TowerPrefab: {fileID: 3185090909012906446, guid: 0399c9d684e48144e999bf80d8d0628c,
+    type: 3}
+  Lv2UpgradePrefab: {fileID: 3663307551490530966, guid: 05bb02da59e7fa640b3c03e06392a366,
+    type: 3}
+  Lv3UpgradePrefab: {fileID: 4220246809433879781, guid: 6d429ec4ac0d89948a8a6aeaa5d6926c,
+    type: 3}

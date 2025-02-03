@@ -11,6 +11,10 @@ public static class Bus
     public static readonly BusEvent Sync = new BusEvent();
 }
 
+public class TimeChanged : EventArgs
+{
+
+}
 public class EnemyDeathEvent : EventArgs
 { 
     public GameObject target { get; }
