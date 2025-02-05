@@ -10,6 +10,8 @@ public class TowerInfo : ScriptableObject
     public float range;
     public float attackInterval;
 
+    public string towerName;
+
     public GameObject projectilePrefab;
 
     public GameObject TowerPrefab;

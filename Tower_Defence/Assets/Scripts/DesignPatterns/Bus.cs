@@ -27,6 +27,12 @@ public class EnemyDeathEvent : EventArgs
 
 public class OnEnemyReachedBase : EventArgs
 {
+    public GameObject target { get; }
+
+    public OnEnemyReachedBase(GameObject _target)
+    {
+        target = _target;
+    }
 }
 
 public class EnemyTakesDamageEvent : EventArgs

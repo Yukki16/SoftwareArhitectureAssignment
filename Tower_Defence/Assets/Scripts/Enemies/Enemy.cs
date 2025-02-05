@@ -31,10 +31,8 @@ public class Enemy : MonoBehaviour
     public bool isSlowed;
     public float slowedPower = 0;
     [HideInInspector] public Coroutine slowCoroutine;
-
-    public Slider healthBar;
-
-    public GameObject moneyAfterDeathDisplayCanvasPrefab;
+    [SerializeField] GameObject slowedText;
+    [SerializeField] GameObject moneyAfterDeathDisplayCanvasPrefab;
 
 
     /// <summary>
@@ -47,6 +45,7 @@ public class Enemy : MonoBehaviour
         Bus.Sync.Subscribe<EnemyTakesDamageEvent>(OnTakeDamage);
         Bus.Sync.Subscribe<EnemyDeathEvent>(OnDeath);
         Bus.Sync.Subscribe<TimeChanged>(CalculateSpeed);
+        Bus.Sync.Subscribe<OnEnemyReachedBase>(ReachedBase);
         ////////////////////////////////////////////////////////
         if (agent == null)
             agent = GetComponent<NavMeshAgent>();
@@ -64,10 +63,19 @@ public class Enemy : MonoBehaviour
         StartCoroutine(Move());
     }
 
+    private void ReachedBase(OnEnemyReachedBase @event)
+    {
+        if(@event.target.Equals(gameObject))
+        {
+            StopAllCoroutines();
+            StartCoroutine(DestroyNextFrame());
+        }
+    }
+
     //Recalculates the speed when the time scale changes;
     private void CalculateSpeed(TimeChanged changed)
     {
-        speed = speed * Time.timeScale;
+        speed = properties.speed * Time.timeScale;
         agent.speed = speed - (speed * slowedPower) / 100;
     }
 
@@ -80,6 +88,7 @@ public class Enemy : MonoBehaviour
         if (@event.target.Equals(gameObject))
         {
             GameManager.Instance.AddMoney(goldValue);
+            Instantiate(moneyAfterDeathDisplayCanvasPrefab, this.transform.position, Quaternion.identity).GetComponentInChildren<TMP_Text>().text = "+" + goldValue.ToString();
             StopAllCoroutines();
             StartCoroutine(DestroyNextFrame());
         }
@@ -100,20 +109,25 @@ public class Enemy : MonoBehaviour
         Bus.Sync.Unsubscribe<EnemyTakesDamageEvent>(OnTakeDamage);
         Bus.Sync.Unsubscribe<EnemyDeathEvent>(OnDeath);
         Bus.Sync.Unsubscribe<TimeChanged>(CalculateSpeed);
+        Bus.Sync.Unsubscribe<OnEnemyReachedBase>(ReachedBase);
     }
 
     public void StopSlowCoroutine()
     {
         agent.speed = speed;
         if(slowCoroutine != null)
+        {
             StopCoroutine(slowCoroutine);
+            slowedText.SetActive(false);
+        }
     }
     public IEnumerator Slow()
     {
         agent.speed = speed - (speed * slowedPower) / 100;
-
+        slowedText.SetActive(true);
         yield return new WaitForSeconds(1f);
 
+        slowedText.SetActive(false);
         slowedPower = 0;
         agent.speed = speed;
         isSlowed = false;
@@ -152,5 +166,10 @@ public class Enemy : MonoBehaviour
                 agent.remainingDistance <= agent.stoppingDistance);
             }
         }
+    }
+
+    public float ReturnPercentHP()
+    {
+        return health / properties.health;
     }
 }

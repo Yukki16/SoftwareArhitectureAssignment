@@ -6,22 +6,22 @@ public class Tower : MonoBehaviour
 {
     [Header("Scriptable Objects")]
     [SerializeField] TargetBehaviour targetingState;
-    [SerializeField] TowerInfo towerInfo;
+    [SerializeField] public TowerInfo towerInfo;
 
     [Header("Upgrades")]
-    [SerializeField] int upgradeCost;
-    [Range(0f, 100f), SerializeField] int damageUpgradePercentage;
+    [SerializeField] public int upgradeCost;
+    [Range(0f, 100f), SerializeField] public int damageUpgradePercentage;
     [SerializeField] int damageGoldValue;
-    [Range(0f, 100f), SerializeField] int attackIntervalUpgradePercentage;
+    [Range(0f, 100f), SerializeField] public int attackIntervalUpgradePercentage;
     [SerializeField] int attackIntervalGoldValue;
-    [Range(0f, 100f), SerializeField] int rangeUpgradePercentage;
+    [Range(0f, 100f), SerializeField] public int rangeUpgradePercentage;
     [SerializeField] int rangeGoldValue;
 
     [Header("Tower Stats")]
     [SerializeField] int goldValue;
-    [SerializeField] float attackInterval;
+    [SerializeField] public float attackInterval;
     [SerializeField] public float damage;
-    [SerializeField] float range;
+    [SerializeField] public float range;
 
     [Header("Projectile")]
     [SerializeField] GameObject projectilePrefab;
@@ -34,7 +34,7 @@ public class Tower : MonoBehaviour
     [Header("Tower level")]
     [SerializeField] GameObject currentUpgradeTowerPrefab;
     [SerializeField] public GameObject objectLookingAtEnemy; //For example the balista bow to look at enemy (i know it might look funky but is because of the asset)
-    int towerLevel = 1;
+    [HideInInspector] public int towerLevel = 1;
 
     private void OnEnable()
     {

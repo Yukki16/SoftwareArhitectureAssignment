@@ -16,6 +16,7 @@ MonoBehaviour:
   damage: 4
   range: 10
   attackInterval: 2
+  towerName: BalistaTower
   projectilePrefab: {fileID: 3168916258967647786, guid: d5b5ca69629ecd44d8e523ce727f6ca2,
     type: 3}
   TowerPrefab: {fileID: 466101674318603530, guid: 54fb8e1ebc7f8a94ab3344bd8009c3e9,

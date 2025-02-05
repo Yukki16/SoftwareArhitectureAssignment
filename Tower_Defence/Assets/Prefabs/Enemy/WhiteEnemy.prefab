@@ -22,15 +22,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 466648, guid: 996b1cdc214c6ad43b2b0a8dc6ab12ed, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 33.67146
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 466648, guid: 996b1cdc214c6ad43b2b0a8dc6ab12ed, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.4635973
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 466648, guid: 996b1cdc214c6ad43b2b0a8dc6ab12ed, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 18.679562
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 466648, guid: 996b1cdc214c6ad43b2b0a8dc6ab12ed, type: 3}
       propertyPath: m_LocalRotation.w
@@ -64,6 +64,31 @@ PrefabInstance:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: 1c8eb88c1b2c3714aac890a804e8ab58, type: 2}
+    - target: {fileID: 397774540719122243, guid: 996b1cdc214c6ad43b2b0a8dc6ab12ed,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.002
+      objectReference: {fileID: 0}
+    - target: {fileID: 397774540719122243, guid: 996b1cdc214c6ad43b2b0a8dc6ab12ed,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.002
+      objectReference: {fileID: 0}
+    - target: {fileID: 397774540719122243, guid: 996b1cdc214c6ad43b2b0a8dc6ab12ed,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4520365682590643954, guid: 996b1cdc214c6ad43b2b0a8dc6ab12ed,
+        type: 3}
+      propertyPath: m_AdditionalShaderChannelsFlag
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 8017159620839661683, guid: 996b1cdc214c6ad43b2b0a8dc6ab12ed,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -85,6 +110,12 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: -8338149090405704661}
   m_SourcePrefab: {fileID: 100100000, guid: 996b1cdc214c6ad43b2b0a8dc6ab12ed, type: 3}
+--- !u!1 &4358430753285188445 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8017159620839661683, guid: 996b1cdc214c6ad43b2b0a8dc6ab12ed,
+    type: 3}
+  m_PrefabInstance: {fileID: 5998493022209395502}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &5998493022209304438 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 175192, guid: 996b1cdc214c6ad43b2b0a8dc6ab12ed,
@@ -109,8 +140,9 @@ MonoBehaviour:
   path: {fileID: 11400000, guid: f68ab26c02214d949bff42a85966bf1b, type: 2}
   isSlowed: 0
   slowedPower: 0
-  healthBar: {fileID: 0}
-  moneyAfterDeathDisplayCanvasPrefab: {fileID: 0}
+  slowedText: {fileID: 4358430753285188445}
+  moneyAfterDeathDisplayCanvasPrefab: {fileID: 2148046192322082210, guid: 72eceb5fcfb383647af56d69b6017b42,
+    type: 3}
 --- !u!195 &4359611807424518701
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -127,7 +159,7 @@ NavMeshAgent:
   m_AngularSpeed: 120
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 1
+  m_AutoBraking: 0
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0

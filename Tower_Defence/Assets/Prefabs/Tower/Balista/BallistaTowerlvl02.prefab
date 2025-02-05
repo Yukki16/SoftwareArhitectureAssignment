@@ -128,6 +128,7 @@ GameObject:
   - component: {fileID: 4841617432439444852}
   - component: {fileID: 7758235483527086628}
   - component: {fileID: 8901759889743463044}
+  - component: {fileID: 72532830423898430}
   m_Layer: 0
   m_Name: BallistaBowlvl02
   m_TagString: Bow
@@ -203,6 +204,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &72532830423898430
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8035361948426347917}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8a0f6221a6ff2b4cbdae0e6ab294e9e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 0}
 --- !u!1 &8679257268774965540
 GameObject:
   m_ObjectHideFlags: 0

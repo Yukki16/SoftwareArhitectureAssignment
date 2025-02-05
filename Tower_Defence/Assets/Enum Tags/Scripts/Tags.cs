@@ -11,4 +11,7 @@ public const string T_Folder = @"Folder";
 public const string T_Enemy = @"Enemy";
 public const string T_ArrowSpawn = @"ArrowSpawn";
 public const string T_Bow = @"Bow";
+public const string T_TowerPlacement = @"TowerPlacement";
+public const string T_EndPortal = @"EndPortal";
+public const string T_SpawnPortal = @"SpawnPortal";
 }

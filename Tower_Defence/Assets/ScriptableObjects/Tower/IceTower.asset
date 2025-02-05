@@ -14,8 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   costValue: 70
   damage: 20
-  range: 7
+  range: 12
   attackInterval: 1
+  towerName: IceTower
   projectilePrefab: {fileID: 0}
   TowerPrefab: {fileID: 3185090909012906446, guid: 0399c9d684e48144e999bf80d8d0628c,
     type: 3}

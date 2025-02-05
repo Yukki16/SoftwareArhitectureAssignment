@@ -42,7 +42,13 @@ public class Hitbox : MonoBehaviour
     {
         if (targets.Contains(@event.target.transform))
         {
-            targets.Remove(@event.target.transform);
+            StartCoroutine(RemoveNextFrame(@event.target.transform));
         }
+    }
+
+    IEnumerator RemoveNextFrame(Transform target)
+    {
+        yield return new WaitForEndOfFrame();
+        targets.Remove(target);
     }
 }

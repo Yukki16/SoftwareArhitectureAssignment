@@ -8,6 +8,7 @@ public class PlayingSO : StateSO
     Coroutine spawnEnemiesCoroutine = null;
     public override void OnEnter(GameObject owner)
     {
+        Bus.Sync.Publish(this, new UpdateUI());
         if(spawnEnemiesCoroutine == null)
         {
             Debug.Log("Started spawning enemies");

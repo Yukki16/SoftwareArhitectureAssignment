@@ -14,8 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   costValue: 75
   damage: 8
-  range: 7
+  range: 8
   attackInterval: 1.5
+  towerName: FireTower
   projectilePrefab: {fileID: 2888325514139955586, guid: a9bc72e924ce472478517a214f8a2522,
     type: 3}
   TowerPrefab: {fileID: 1598074345317265207, guid: d398fd9d2e2f37443800edbe77ee11b8,

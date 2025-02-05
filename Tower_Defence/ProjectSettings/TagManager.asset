@@ -8,6 +8,9 @@ TagManager:
   - Enemy
   - ArrowSpawn
   - Bow
+  - TowerPlacement
+  - EndPortal
+  - SpawnPortal
   layers:
   - Default
   - TransparentFX

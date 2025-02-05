@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class TowerPlacement : MonoBehaviour
 {
-    [SerializeField] bool hasTower;
+    [SerializeField] public bool hasTower;
 
-    [SerializeField] GameObject selectedArrow;
+    [SerializeField] public GameObject selectedArrow;
 
-    [SerializeField] Tower tower;
+    [SerializeField] public Tower tower;
 
     public void BuildTower(GameObject towerPrefab, int goldCost)
     {
@@ -17,6 +17,14 @@ public class TowerPlacement : MonoBehaviour
             GameManager.Instance.UsedCoins(goldCost);
             tower = Instantiate(towerPrefab, transform.position, transform.rotation, this.transform).GetComponentInChildren<Tower>();
             hasTower = true;
+        }
+    }
+
+    public void UpgradeTower()
+    {
+        if(hasTower)
+        {
+            tower.Upgrade();
         }
     }
 }

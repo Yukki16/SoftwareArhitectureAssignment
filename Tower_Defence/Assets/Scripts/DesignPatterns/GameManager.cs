@@ -17,12 +17,12 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
-    static StateMachine _stateMachine;
+    [HideInInspector] public StateMachine _stateMachine;
 
     #region States
     [Header("GameStates")]
     [SerializeField] StateSO none;
-    [SerializeField] PauseSO pause;
+    [SerializeField] public PauseSO pause;
     [SerializeField] PlayingSO playing;
     [SerializeField] BuildingSO building;
 
@@ -33,8 +33,10 @@ public class GameManager : MonoBehaviour
 
     #region GeneralProperties
     [Header("General Properties")]
-    public int lifes = 5;
-    public int coins = 300;
+    [Tooltip("The values will be modified when entering play state to the game values. The properties are just to debug/showcase")]
+    [SerializeField] GameValues gameValues;
+    /*[HideInInspector]*/ public int lifes = 5;
+    /*[HideInInspector]*/ public int coins = 300;
     #endregion
 
     #region WaveProperties
@@ -43,16 +45,9 @@ public class GameManager : MonoBehaviour
     [HideInInspector]
     public int waveNumber = 0;
 
-    [Range(5, 10)]
-    public int maxWaveNumber = 5;
-
     [Range(10f, 100f)]
-    public float waveDifficultyIncrement;
+    public float waveDifficultyIncrement = 10f;
 
-    [Header("Delays")]
-
-    [Min(0.1f)]
-    public float spawnDelay;
     #endregion
 
     #region Enemies
@@ -61,7 +56,7 @@ public class GameManager : MonoBehaviour
     public int initialNumberOfEnemiesToSpawn = 10;
     public List<enemyTypePercentage> enemyTypePercentages = new List<enemyTypePercentage>();
 
-    int remainingNumberOfEnemiesToSpawn;
+    [SerializeField] /*[HideInInspector]*/int remainingNumberOfEnemiesToSpawn;
     int lastCalculatedNumberOfEnemiesToSpawn;
 
     //[HideInInspector]
@@ -84,6 +79,7 @@ public class GameManager : MonoBehaviour
     
     [Range(0, 60)]
     public int buildingTime = 30;
+    [HideInInspector] public int timeLeft;
 
 
     #region DebugValues
@@ -93,12 +89,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] int lifesToAdd = 100;
     [SerializeField] bool invincibleBase = false;
     #endregion
-    
-    public void AddMoney(int moneyToAdd)
-    {
-        coins += moneyToAdd;
-    }
-
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.L)) //Adds money
@@ -108,30 +98,65 @@ public class GameManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.K)) //Adds lifes
         {
             lifes += lifesToAdd;
+            Bus.Sync.Publish(this, new UpdateUI());
         }
         if (Input.GetKeyDown(KeyCode.N)) //Ends game
         {
             Bus.Sync.Publish(this.gameObject, new EndOfGame());
+            _stateMachine.UpdateState(TransitionConditions.Con_Empty);
         }
         if (Input.GetKeyDown(KeyCode.I)) //Makes the base invincible
         {
-            invincibleBase = true;
+            invincibleBase = !invincibleBase;
         }
 
-        if(Input.GetKeyDown(KeyCode.L))
+        /*if (Input.GetKeyDown(KeyCode.L))
         {
             StartGame();
-        }
+        }*/
+    }
+    
+    public void AddMoney(int moneyToAdd)
+    {
+        coins += moneyToAdd;
+        Bus.Sync.Publish(this.gameObject, new UpdateUI());
     }
 
-    private void StartGame()
+
+    public void Reset()
     {
+        coins = gameValues.startingCoins;
+        lifes = gameValues.lifes;
+
+        waveNumber = 0;
+
+        remainingNumberOfEnemiesToSpawn = initialNumberOfEnemiesToSpawn;
+        lastCalculatedNumberOfEnemiesToSpawn = initialNumberOfEnemiesToSpawn;
+
+        playing.SetCoroutine(null);
+    }
+    public void StartGame()
+    {
+        Reset();
+        _stateMachine.UpdateState(TransitionConditions.Con_Play);
+        Bus.Sync.Publish(this, new UpdateUI());
+    }
+
+    public IEnumerator BuildingCountDown()
+    {
+        timeLeft = buildingTime;
+        for (int i = buildingTime; i > 0; i--)
+        {
+            timeLeft--;
+            Bus.Sync.Publish(this, new UpdateUI());
+            yield return new WaitForSeconds(1f); // stops on pause state
+        }
         _stateMachine.UpdateState(TransitionConditions.Con_Play);
     }
-
     
     public IEnumerator SpawnEnemies()
     {
+        enemySpawnpoint = GameObject.FindGameObjectWithTag(Tags.T_SpawnPortal).transform;
         Debug.Log("Started coroutine");
         float randomNumber;
         float totalValueOfPersantages = 0;
@@ -169,11 +194,15 @@ public class GameManager : MonoBehaviour
             }
 
 
-            yield return new WaitForSeconds(spawnDelay); //Uses scaled time so the coroutine will pause if the pause state enters
+            yield return new WaitForSeconds(gameValues.spawnDelay); //Uses scaled time so the coroutine will pause if the pause state enters
         }
 
+        
+
+        yield return new WaitUntil(() => enemyList.Count == 0); //Waits until all enemies are killed to enter building mode.
+
         waveNumber++;
-        if (waveNumber >= maxWaveNumber)
+        if (waveNumber > gameValues.maxWaveNumber)
         {
             Bus.Sync.Publish(this.gameObject, new EndOfGame());
 
@@ -184,9 +213,9 @@ public class GameManager : MonoBehaviour
         //Increase difficulty of the wave
         IncreaseDifficultyOfTheWave();
 
-        yield return new WaitUntil(() => enemyList.Count == 0); //Waits until all enemies are killed to enter building mode.
+        playing.SetCoroutine(null);
         _stateMachine.UpdateState(TransitionConditions.Con_Build);
-
+        StartCoroutine(BuildingCountDown());
 
         /*        //Add a timer on GUI
                 Debug.Log("Building time started");
@@ -196,7 +225,8 @@ public class GameManager : MonoBehaviour
 
     void IncreaseDifficultyOfTheWave()
     {
-        lastCalculatedNumberOfEnemiesToSpawn += (int)((lastCalculatedNumberOfEnemiesToSpawn / 100) * waveDifficultyIncrement);
+        lastCalculatedNumberOfEnemiesToSpawn += (int)(waveDifficultyIncrement % 10);
+        Debug.Log(lastCalculatedNumberOfEnemiesToSpawn);
         remainingNumberOfEnemiesToSpawn = lastCalculatedNumberOfEnemiesToSpawn;
     }
     public void UsedCoins(int howManyCoins)
@@ -211,16 +241,27 @@ public class GameManager : MonoBehaviour
             Instance = this;
             SetUpStates();
             Bus.Sync.Subscribe<EnemyDeathEvent>(RemoveEnemyFromList);
+            Bus.Sync.Subscribe<OnEnemyReachedBase>(EnemyReachedBase);
+            Bus.Sync.Subscribe<OnEnemyReachedBase>(RemoveEnemyFromList);
+            Reset();
+            DontDestroyOnLoad(this.gameObject);
         }
         else
         {
             Destroy(gameObject);
         }
 
-        remainingNumberOfEnemiesToSpawn = initialNumberOfEnemiesToSpawn;
-        lastCalculatedNumberOfEnemiesToSpawn = initialNumberOfEnemiesToSpawn;
+        
 
         //Bus.Sync.Subscribe<OnEnemyReachedBase>(EnemyReachedBase);
+    }
+
+    private void RemoveEnemyFromList(OnEnemyReachedBase @event)
+    {
+        if (enemyList.Contains(@event.target))
+        {
+            enemyList.Remove(@event.target);
+        }
     }
 
     private void RemoveEnemyFromList(EnemyDeathEvent @event)
@@ -242,7 +283,7 @@ public class GameManager : MonoBehaviour
         _stateMachine.AddTransitions(stateTransitions);
         _stateMachine.AddGlobalTransitons(globalStateTransitions);
     }
-    void EnemyReachedBase(object sender, EventArgs args)
+    void EnemyReachedBase(OnEnemyReachedBase @event)
     {
         if (!invincibleBase)
         {
@@ -250,7 +291,7 @@ public class GameManager : MonoBehaviour
             if (lifes == 0)
             {
                 Bus.Sync.Publish(this.gameObject, new EndOfGame());
-                //state = stateOfGame.EndOfGame;
+                _stateMachine.UpdateState(TransitionConditions.Con_Empty);
                 StopAllCoroutines();
             }
         }
