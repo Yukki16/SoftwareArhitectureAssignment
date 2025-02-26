@@ -50,5 +50,6 @@ public class BusEvent
                 (subscriber as Action<T>)?.Invoke(e);
             }
         }
+        Debug.Log($"Published an event of type: {e.GetType()}");
     }
 }

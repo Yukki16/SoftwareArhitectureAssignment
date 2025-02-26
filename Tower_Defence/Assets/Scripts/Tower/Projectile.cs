@@ -35,9 +35,10 @@ public class Projectile : MonoBehaviour
         {
             if (hitbox != null)
             {
-                foreach (var enemy in hitbox.targets)
+                for (int i = hitbox.targets.Count - 1; i >= 0; i--)
                 {
-                    if(enemy != null)
+                    Transform enemy = hitbox.targets[i];
+                    if (enemy != null)
                     Bus.Sync.Publish(this, new EnemyTakesDamageEvent(enemy.gameObject, damage));
                 }
             }

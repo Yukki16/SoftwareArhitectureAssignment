@@ -22,6 +22,7 @@ public class HealthBar : MonoBehaviour
     {
         if(this.transform.IsChildOf(@event.target.transform))
         {
+            Debug.Log("Received msg");
             _enemyHealthBar.fillAmount = @event.target.GetComponent<Enemy>().ReturnPercentHP();
         }
     }

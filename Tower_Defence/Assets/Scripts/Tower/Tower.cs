@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Tower : MonoBehaviour
@@ -59,7 +60,7 @@ public class Tower : MonoBehaviour
     {
         yield return new WaitUntil(() => hitbox.targets.Count > 0);
         yield return new WaitForSeconds(attackInterval);
-
+        //yield return new WaitForNextFrameUnit();
         targetingState.PerformAttack(this, hitbox.targets, projectilePrefab);
         StartCoroutine(Attack());
     }

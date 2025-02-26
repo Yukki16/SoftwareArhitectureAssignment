@@ -180,8 +180,9 @@ MonoBehaviour:
   remainingNumberOfEnemiesToSpawn: 0
   enemySpawnpoint: {fileID: 0}
   enemyPOI: {fileID: 0}
-  buildingTime: 35
+  buildingTime: 8
   timeLeft: 0
+  testSpawning: 0
   money: 10000
   lifesToAdd: 100
   invincibleBase: 0

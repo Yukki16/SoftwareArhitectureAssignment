@@ -34,6 +34,9 @@ public class Enemy : MonoBehaviour
     [SerializeField] GameObject slowedText;
     [SerializeField] GameObject moneyAfterDeathDisplayCanvasPrefab;
 
+    [Header("Debug")]
+    [SerializeField] bool stopMovement;
+
 
     /// <summary>
     /// DON'T FORGET TO SUBSCRIBE
@@ -60,7 +63,11 @@ public class Enemy : MonoBehaviour
 
         agent.stoppingDistance = 0.1f;
 
-        StartCoroutine(Move());
+        if(!stopMovement)
+        {
+            StartCoroutine(Move());
+        }
+        
     }
 
     private void ReachedBase(OnEnemyReachedBase @event)
@@ -148,6 +155,10 @@ public class Enemy : MonoBehaviour
 
     private void Update()
     {
+        if(stopMovement)
+        {
+            return;
+        }
         if (!agent.isStopped)
         {
             distanceTraveled += agent.speed * Time.deltaTime;

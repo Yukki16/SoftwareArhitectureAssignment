@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 public class Hitbox : MonoBehaviour
 {
@@ -42,7 +43,8 @@ public class Hitbox : MonoBehaviour
     {
         if (targets.Contains(@event.target.transform))
         {
-            StartCoroutine(RemoveNextFrame(@event.target.transform));
+            targets.Remove(@event.target.transform);
+            //StartCoroutine(RemoveNextFrame(@event.target.transform));
         }
     }
 

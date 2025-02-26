@@ -85,6 +85,7 @@ public class GameManager : MonoBehaviour
     #region DebugValues
     [Header("Debug values")]
     [Tooltip("The amount of money to add by pressing < L > to the total of the coins")]
+    [SerializeField] bool testSpawning;
     [SerializeField] int money = 10000;
     [SerializeField] int lifesToAdd = 100;
     [SerializeField] bool invincibleBase = false;
@@ -110,10 +111,10 @@ public class GameManager : MonoBehaviour
             invincibleBase = !invincibleBase;
         }
 
-        /*if (Input.GetKeyDown(KeyCode.L))
+        if (testSpawning && Input.GetKeyDown(KeyCode.L))
         {
             StartGame();
-        }*/
+        }
     }
     
     public void AddMoney(int moneyToAdd)
@@ -153,10 +154,14 @@ public class GameManager : MonoBehaviour
         }
         _stateMachine.UpdateState(TransitionConditions.Con_Play);
     }
-    
+
     public IEnumerator SpawnEnemies()
     {
-        enemySpawnpoint = GameObject.FindGameObjectWithTag(Tags.T_SpawnPortal).transform;
+        if (enemySpawnpoint == null)
+        {
+            enemySpawnpoint = GameObject.FindGameObjectWithTag(Tags.T_SpawnPortal).transform; 
+        }
+
         Debug.Log("Started coroutine");
         float randomNumber;
         float totalValueOfPersantages = 0;
