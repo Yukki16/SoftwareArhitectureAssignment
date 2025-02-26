@@ -47,6 +47,7 @@ public class BuyButton : MonoBehaviour
     IEnumerator CheckForAvailability()
     {
         yield return new WaitForEndOfFrame();
+        _thisButton.interactable = false;
         yield return new WaitUntil(() => GameManager.Instance.coins >= _towerInfo.costValue);
         _thisButton.interactable = true;
     }
